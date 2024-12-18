@@ -1,0 +1,2 @@
+var json_drainase_tertutup_3 ={"type":"Feature","properties":{"Id":0.0,"Keterangan":"Batas Administrasi","Luas_ha":"1,41054800205099E-03","Landuse":"Drainase Tertutup"},"geometry":{"type":"MultiPolygon","coordinates":
+[[[[125.590980501696905,3.550900275966018],[125.59090949445995,3.550960878436103],[125.590916498121899,3.550972532848828],[125.590987003276979,3.55090920565617],[125.590980501696905,3.550900275966018]]]]}}
