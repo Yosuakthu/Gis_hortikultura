@@ -6,7 +6,7 @@
             <img src="{{ asset('assets/img/user2-160x160.jpg')}}" class="img-circle elevation-2" alt="User Image">
           </div>
           <div class="info">
-            <a href="#" class="d-block">GisZNT</a>
+            <a href="#" class="d-block">GIS Hortikultura</a>
           </div>
         </div>
 
@@ -43,7 +43,7 @@
               <a href="{{ route('csv.table')}}" class="nav-link">
                 <i class="nav-icon fas fa-edit"></i>
                 <p>
-                  Data CSV</i>
+                  Management Data</i>
                 </p>
               </a>
             </li>

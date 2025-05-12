@@ -16,14 +16,19 @@ class UsrController extends Controller
      * Display a listing of the resource.
      */
 
-    public function index()
+    public function index2()
     {
         $users = User::all();
-        return view('index',['titel' => 'Dashboard']);
+        return view('index2',['titel' => 'Dashboard2']);
     }
     public function peta()
     {
         return view('usrpeta',['titel' => 'Peta']);
+    }
+
+    public function about()
+    {
+        return view('about', ['titel' => 'About']);
     }
 
     public function pengguna(Request $request)

@@ -1,5 +1,3 @@
-<x-usrlayout>
-    <section class="content">
-    <x-layer></x-layer>
-    </section>
-</x-usrlayout>
+<x-usrlayout2>
+        <x-layer></x-layer>
+</x-usrlayout2>

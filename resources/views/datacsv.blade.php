@@ -13,27 +13,20 @@
             <table id="datacsv" class="display" style="width:100%">
                 <thead>
                     <tr>
-                        <th>FID Garis P</th>
-                        <th>FID Zona L</th>
-                        <th>Objectid</th>
-                        <th>Jenis Zona</th>
-                        <th>Shape Leng</th>
-                        <th>Shape Area</th>
-                        <th>PSTDDEV</th>
-                        <th>STDDEV</th>
-                        <th>Mean</th>
-                        <th>Count</th>
-                        <th>Min</th>
-                        <th>Max</th>
-                        <th>No Zona</th>
-                        <th>Rp Bulat</th>
-                        <th>Sum Nilai</th>
-                        <th>Range Nilai</th>
-                        <th>Rp Bulat 1</th>
-                        <th>Sum Nilai 1</th>
-                        <th>Range Nilai 1</th>
-                        <th>Rp 1</th>
-                        <th>Rp 2</th>
+                        <th>Nama</th>
+                        <th>No HP</th>
+                        <th>Nama Kebun</th>
+                        <th>Luas</th>
+                        <th>Elevasi</th>
+                        <th>Kelompok Tani</th>
+                        <th>Ketua Kelompok</th>
+                        <th>No HP Ketua</th>
+                        <th>Alamat Ketua</th>
+                        <th>Komoditi</th>
+                        <th>Varietas</th>
+                        <th>Jenis Tanaman</th>
+                        <th>Jumlah Bibit</th>
+                        <th>GeoData</th>
                         <th width="200px">Action</th>
                     </tr>
                 </thead>
@@ -53,27 +46,20 @@
                     scrollCollapse: true,
                     paging: true,
                       columns: [
-                          {data: 'fid_garisp', name: 'fid_garisp'},
-                          {data: 'fid_zona_l', name: 'fid_zona_l'},
-                          {data: 'objectid', name: 'objectid'},
-                          {data: 'jenis_zona', name: 'jenis_zona'},
-                          {data: 'shape_leng', name: 'shape_leng'},
-                          {data: 'shape_area', name: 'shape_area'},
-                          {data: 'pstddev', name: 'pstddev'},
-                          {data: 'stddev', name: 'stddev'},
-                          {data: 'mean', name: 'mean'},
-                          {data: 'count', name: 'count'},
-                          {data: 'min', name: 'min'},
-                          {data: 'max', name: 'max'},
-                          {data: 'nozone', name: 'nozone'},
-                          {data: 'rpbulat', name: 'rpbulat'},
-                          {data: 'sum_nilai', name: 'sum_nilai'},
-                          {data: 'range_nila', name: 'range_nila'},
-                          {data: 'rpbulat_1', name: 'rpbulat_1'},
-                          {data: 'sum_nilai1', name: 'sum_nilai1'},
-                          {data: 'range_ni_1', name: 'range_ni_1'},
-                          {data: 'rp_1', name: 'rp_1'},
-                          {data: 'rp_2', name: 'range_nila'},
+                          {data: 'nama', name: 'nama'},
+                          {data: 'no_hp', name: 'no_hp'},
+                          {data: 'lokasi', name: 'lokasi'},
+                          {data: 'luas', name: 'luas'},
+                          {data: 'elevasi', name: 'elevasi'},
+                          {data: 'kelompok', name: 'kelompok'},
+                          {data: 'leader', name: 'leader'},
+                          {data: 'al_leader', name: 'al_leader'},
+                          {data: 'no_leader', name: 'no_leader'},
+                          {data: 'komoditi', name: 'komoditi'},
+                          {data: 'varietas', name: 'varietas'},
+                          {data: 'tanaman', name: 'tanaman'},
+                          {data: 'jumb_bibit', name: 'jumb_bibit'},
+                          {data: 'geojson_path', name: 'geojson_path'},
                           {data: 'action', name: 'action', orderable: false, searchable: false},
                       ]
                   });

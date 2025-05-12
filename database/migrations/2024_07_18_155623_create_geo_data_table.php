@@ -13,28 +13,20 @@ return new class extends Migration
     {
         Schema::create('geo_data', function (Blueprint $table) {
             $table->id();
-            $table->string('fid_garisp')->nullable();
-            $table->string('fid_zona_l')->nullable();
-            $table->integer('objectid')->nullable();
-            $table->string('jenis_zona')->nullable();
-            $table->string('shape_leng')->nullable();
-            $table->string('shape_area')->nullable();
-            $table->string('pstddev')->nullable();
-            $table->string('stddev')->nullable();
-            $table->string('mean')->nullable();
-            $table->integer('count')->nullable();
-            $table->integer('min')->nullable();
-            $table->integer('max')->nullable();
-            $table->string('nozone')->nullable();
-            $table->string('rpbulat')->nullable();
-            $table->string('sum_nilai')->nullable();
-            $table->string('range_nila')->nullable();
-            $table->string('rpbulat_1')->nullable();
-            $table->string('sum_nilai1')->nullable();
-            $table->string('range_ni_1')->nullable();
-            $table->string('rp_1')->nullable();
-            $table->string('rp_2')->nullable();
-            $table->text('geometry')->nullable();
+            $table->string('nama');
+            $table->string('tanaman');
+            $table->string('lokasi');
+            $table->decimal('luas', 10, 2)->nullable();
+            $table->integer('elevasi')->nullable();
+            $table->string('no_hp')->nullable();
+            $table->string('kelompok')->nullable();
+            $table->string('leader')->nullable();
+            $table->string('no_leader')->nullable();
+            $table->string('al_leader')->nullable();
+            $table->string('komoditi');
+            $table->string('varietas');
+            $table->integer('jumb_bibit')->nullable();
+            $table->string('geojson_path');
             // Tambahkan kolom lain sesuai kebutuhan
             $table->timestamps();
         });

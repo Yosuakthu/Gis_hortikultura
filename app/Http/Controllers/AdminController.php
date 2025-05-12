@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\GeoData;
+use Illuminate\Support\Facades\DB; 
+
 
 
 class AdminController extends Controller
@@ -13,7 +16,29 @@ class AdminController extends Controller
     public function index()
     {
         $user = session('user');
-        return view('admin.index', compact('user'),['titel' => 'Dashboard']);
+         $total = GeoData::count();
+        $totalCabe = GeoData::where('tanaman', 'cabe')->count();
+        $totalTomat = GeoData::where('tanaman', 'tomat')->count();
+         $totalTerong = GeoData::where('tanaman', 'Terong')->count();
+        $totalKetimun = GeoData::where('tanaman', 'ketimun')->count();
+         $totalBuncis = GeoData::where('tanaman', 'buncis')->count();
+        $totalCaisin = GeoData::where('tanaman', 'caisin')->count();
+        $jenisTanaman = DB::table('geo_data')
+        ->select('tanaman', DB::raw('count(*) as total'))
+        ->groupBy('tanaman')
+        ->get();
+
+        return view('admin.index', compact('user'),[
+            'titel' => 'Dashboard',
+            'totalTanaman' => $total,
+            'tomat' => $totalTomat,
+            'cabe' => $totalCabe,
+            'terong' => $totalTerong,
+            'ketimun' => $totalKetimun,
+            'buncis' => $totalBuncis,
+            'caisin' => $totalCaisin,
+             'jenisTanaman' => $jenisTanaman
+        ]);
     }
 
 

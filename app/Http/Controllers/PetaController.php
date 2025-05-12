@@ -5,22 +5,26 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\GeoData;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use League\Csv\Reader;
 use League\Csv\Statement;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\GeoDataImport;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
+
 class PetaController extends Controller
 {
 
     public function usrpeta()
     {
-        return view('usrpeta',['titel' => 'Peta Zonah Nilai Tanah']);
+        return view('usrpeta',['titel' => 'Peta Zona']);
     }
 
     public function peta()
     {
-        return view('peta',['titel' => 'Peta Zonah Nilai Tanah']);
+        return view('peta',['titel' => 'Peta Zona']);
     }
 
     public function showForm()
@@ -49,77 +53,51 @@ class PetaController extends Controller
     // Star Note  https://docs.google.com/document/d/e/2PACX-1vTn1Yyueno4u0I1PnHbzgBrrSb2bWNuIX8wAR0mS1Ll47f3EXZ9bPRK_CPIsYfr2IEUtenpdR5KEfz9/pub
     public function getGeoJson()
     {
-        try {
-            $geoData = GeoData::all();
+      // Ambil semua data dari database
+$geoDataList = GeoData::all();
 
-            Log::info('GeoData:', $geoData->toArray()); // Log data dari database
+// Struktur dasar GeoJSON
+$geojsonArray = [
+    "type" => "FeatureCollection",
+    "features" => []
+];
 
-            $features = $geoData->map(function($item) {
+foreach ($geoDataList as $geoData) {
+    // Ambil path file GeoJSON dari database
+    $filePath = $geoData->geojson_path;
 
-                $cleanRpbulat = str_replace(['Rp.', '.'], '', $item->rpbulat); // Hapus Rp. dan titik
-                $rpbulat = (int)$cleanRpbulat; // Konversi ke integer
+    // Periksa apakah file ada di storage
+    if (Storage::exists($filePath)) {
+        $geojsonContent = Storage::get($filePath);
+        $geojsonDecoded = json_decode($geojsonContent, true);
 
-                $color = 'green'; // Default warna
-                if ($rpbulat >= 1000000) {
-                    $color = 'Coral';
-                } elseif ($rpbulat >= 500000) {
-                    $color = 'lime';
-                }elseif ($rpbulat >= 300000) {
-                    $color = 'yellow';
-                } elseif ($rpbulat >= 150000) {
-                    $color = 'orange';
-                } elseif ($rpbulat >= 100000) {
-                    $color = 'red';
-                } elseif ($rpbulat >= 50000) {
-                $color = '#90EE90';
-                } elseif ($rpbulat >= 1000) {
-                    $color = 'Teal';
-                }
-                return [
-                    'type' => 'Feature',
-                    'properties' => [
-                        'FID_garisp' => $item->fid_garisp,
-                        'FID_Zona_L' => $item->fid_zona_l,
-                        'OBJECTID' => $item->objectid,
-                        'JENIS_ZONA' => $item->jenis_zona,
-                        'Shape_Leng' => $item->shape_leng,
-                        'Shape_Area' => $item->shape_area,
-                        'PSTDDEV' => $item->pstddev,
-                        'STDDEV' => $item->stddev,
-                        'MEAN' => $item->mean,
-                        'COUNT_' => $item->count,
-                        'MIN_' => $item->min,
-                        'MAX_' => $item->max,
-                        'NOZONE' => $item->nozone,
-                        'RPBULAT' => $item->rpbulat,
-                        'SUM_Nilai_' => $item->sum_nilai,
-                        'RANGE_Nila' => $item->range_nila,
-                        'RPBULAT_1' => $item->rpbulat_1,
-                        'SUM_Nilai1' => $item->sum_nilai1,
-                        'RANGE_Ni_1' => $item->range_ni_1,
-                        'RP_1' => $item->rp_1,
-                        'rp_2' => $item->rp_2,
-                        'color'=> $color
-                    ],
-                    'geometry' => [
-                        'type' => 'MultiPolygon',
-                        'coordinates' => json_decode($item->geometry)
-                    ]
-                ];
-            });
+        // Periksa apakah file valid dan memiliki fitur
+        if (isset($geojsonDecoded['features'])) {
+            foreach ($geojsonDecoded['features'] as &$feature) {
+                // Tambahkan data dari database ke dalam properties GeoJSON
+                $feature['properties']['tanaman'] = $geoData->tanaman;
+                $feature['properties']['lokasi'] = $geoData->lokasi;
+                $feature['properties']['luas'] = $geoData->luas;
+                $feature['properties']['elevasi'] = $geoData->elevasi;
+                $feature['properties']['no_hp'] = $geoData->no_hp;
+                $feature['properties']['kelompok'] = $geoData->kelompok;
+                $feature['properties']['leader'] = $geoData->leader;
+                $feature['properties']['no_leader'] = $geoData->no_leader;
+                $feature['properties']['al_leader'] = $geoData->al_leader;
+                $feature['properties']['komoditi'] = $geoData->komoditi;
+                $feature['properties']['varietas'] = $geoData->varietas;
+                $feature['properties']['jumb_bibit'] = $geoData->jumb_bibit;
 
-            $geoJson = [
-                'type' => 'FeatureCollection',
-                'features' => $features
-            ];
-
-            Log::info('GeoJSON:', $geoJson);
-
-            return response()->json($geoJson);
-        } catch (\Exception $e) {
-            Log::error('Error fetching GeoJSON:', ['error' => $e->getMessage()]);
-            return response()->json(['error' => 'Error fetching GeoJSON'], 500);
+                // Tambahkan fitur yang sudah diperbarui ke dalam GeoJSON utama
+                $geojsonArray['features'][] = $feature;
+            }
         }
+    }
+}
+
+// Kembalikan dalam format JSON
+return response()->json($geojsonArray);
+
     }
 
     public function showFormGeo()
@@ -127,66 +105,58 @@ class PetaController extends Controller
         return view('import_geojson',['titel' => 'Import Data ']);
     }
 
-    // Star Note  https://docs.google.com/document/d/e/2PACX-1vRXC9Z1opkAmK_e9j6UY5-y7oFuXB-ZcwTQS-sgkFahhdwkm5f4nN7MAWRoV9JaAVhPgE5nxw3C_9qY/pub
     public function importGeoJSON(Request $request)
     {
-        $request->validate([
-            'geojson_file' => 'required|file|mimes:json,geojson|max:5048',
+
+try {
+    $request->validate([
+        'geojson_file' => 'required|file|mimes:json,geojson',
+        'nama' => 'required|string',
+        'tanaman' => 'required|string',
+        'lokasi' => 'nullable|string',
+        'luas' => 'nullable|numeric',
+        'elevasi' => 'required|numeric',
+        'no_hp' => 'nullable|string',
+        'kelompok' => 'nullable|string',
+        'leader' => 'nullable|string',
+       'no_leader' => 'nullable|string',
+        'al_leader' => 'nullable|string',
+        'komoditi' => 'required|string',
+        'varietas' => 'required|string',
+        'jumb_bibit' => 'nullable|integer',
+    ]);
+} catch (ValidationException $e) {
+    dd($e->errors());
+}
+
+
+
+
+        // Simpan file
+        $filePath = $request->file('geojson_file')->store('geojson_files');
+
+
+
+        // Simpan data ke database
+        GeoData::create([
+            'nama' => $request->nama,
+            'tanaman' => $request->tanaman,
+            'lokasi' => $request->lokasi,
+            'luas' => $request->luas,
+            'elevasi' => $request->elevasi,
+            'no_hp' => $request->no_hp,
+            'kelompok' => $request->kelompok,
+            'leader' => $request->leader,
+            'no_leader' => $request->no_leader,
+            'al_leader' => $request->al_leader,
+            'komoditi' => $request->komoditi,
+            'varietas' => $request->varietas,
+            'jumb_bibit' => $request->jumb_bibit,
+            'geojson_path' => $filePath
         ]);
 
-        try {
-            // Membaca file GeoJSON
-            $fileContent = file_get_contents($request->file('geojson_file')->getPathname());
-            $geoJsonData = json_decode($fileContent, true);
-
-            if (!$geoJsonData || !isset($geoJsonData['features'])) {
-                return redirect()->back()->with('error', 'File GeoJSON tidak valid.');
-            }
-
-            // Iterasi melalui features dan menyimpan ke database
-            foreach ($geoJsonData['features'] as $feature) {
-                $properties = $feature['properties'] ?? [];
-                $geometry = $feature['geometry'] ?? null;
-
-                if (!$geometry || $geometry['type'] !== 'MultiPolygon') {
-                    Log::warning('Geometry tidak valid atau bukan MultiPolygon', ['feature' => $feature]);
-                    continue; // Lewati jika geometry tidak valid
-                }
-
-                GeoData::create([
-                    'fid_garisp'   => $properties['FID_garisp'] ?? null,
-                    'fid_zona_l'   => $properties['FID_Zona_L'] ?? null,
-                    'objectid'     => $properties['OBJECTID'] ?? null,
-                    'jenis_zona'   => $properties['JENIS_ZONA'] ?? null,
-                    'shape_leng'   => $properties['Shape_Leng'] ?? null,
-                    'shape_area'   => $properties['Shape_Area'] ?? null,
-                    'pstddev'      => $properties['PSTDDEV'] ?? null,
-                    'stddev'       => $properties['STDDEV'] ?? null,
-                    'mean'         => $properties['MEAN'] ?? null,
-                    'count'        => $properties['COUNT_'] ?? null,
-                    'min'          => $properties['MIN_'] ?? null,
-                    'max'          => $properties['MAX_'] ?? null,
-                    'nozone'       => $properties['NOZONE'] ?? null,
-                    'rpbulat'      => $properties['RPBULAT'] ?? null,
-                    'sum_nilai'    => $properties['SUM_Nilai_'] ?? null,
-                    'range_nila'   => $properties['RANGE_Nila'] ?? null,
-                    'rpbulat_1'    => $properties['RPBULAT_1'] ?? null,
-                    'sum_nilai1'   => $properties['SUM_Nilai1'] ?? null,
-                    'range_ni_1'   => $properties['RANGE_Ni_1'] ?? null,
-                    'rp_1'         => $properties['RP_1'] ?? null,
-                    'rp_2'         => $properties['rp_2'] ?? null,
-                    'geometry'     => json_encode($geometry['coordinates']), // Menyimpan koordinat sebagai JSON
-                ]);
-            }
-
-            return redirect()->route('csv.table')->with('success', 'File GeoJSON berhasil diimpor.');
-        } catch (\Exception $e) {
-            Log::error('Error importing GeoJSON:', ['error' => $e->getMessage()]);
-            return redirect()->back()->with('error', 'Terjadi kesalahan saat mengimpor GeoJSON.');
-        }
+        return redirect()->route('csv.table')->with('success', 'Data berhasil diimport!');
     }
-
-// End Note
 
 
 

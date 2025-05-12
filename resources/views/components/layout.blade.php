@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/png" sizes="64x64" href="../img/logo.png">
-  <title>GisZNT-{{$titel}}</title>
+  <title>WebGis-Holtikultura-{{$titel}}</title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -27,29 +27,35 @@
 <script src="{{ asset('assets/leaflet/js/leaflet.ajax.js')}}" ></script>
    <style type="text/CSS">
     #map{
-      height: 590px;
-    }.navbar-info {
-      position: absolute;
-      bottom: 60px;
-      right: 20px;
-      background-color: white;
-      color: #333;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      z-index: 1000;
-      font-family: Arial, sans-serif;
+      height: 858px;
     }
-    .navbar-info h3 {
-      margin: 0;
-      margin-bottom: 10px;
-      font-size: 25px;
+
+    .sidebar2 {
+        position: fixed;
+        right: -300px;
+        top: 0;
+        width: 300px;
+        height: 100%;
+        background: white;
+        box-shadow: -2px 0px 5px rgba(0,0,0,0.3);
+        padding: 15px;
+        transition: right 0.3s;
+        z-index: 1000;
     }
-    .navbar-info ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
+    .sidebar2.active {
+        right: 0;
+    }
+    #closeSidebar {
+        background: white ;
+        color: rgb(5, 5, 5);
+        border: none;
+        padding: 5px 10px;
+        font-size: 18px;
+        cursor: pointer;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
 
 .navbar-info li {
   display: flex;
@@ -67,7 +73,7 @@
 }
 .weather-info {
       position: absolute;
-      bottom: 60px;
+      bottom: 20px;
       left: 20px;
       background-color: rgba(255, 255, 255, 0.9);
       padding: 15px;
@@ -100,6 +106,17 @@
     .weather-info li strong {
       font-weight: bold;
     }
+
+    .marker-container {
+    width: 30px;  /* Lebar ikon */
+    height: 30px; /* Tinggi ikon */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 50%;
+    border: 3px solid rgb(255, 167, 36)
+}
+
    </style>
 
 
@@ -142,12 +159,20 @@
 </div>
 <!-- ./wrapper -->
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-colorschemes"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
 <!-- jQuery -->
 <script src="{{ asset('assets/plugins/jquery/jquery.min.js')}}"></script>
 <!-- Bootstrap 4 -->
 <script src="{{ asset('assets/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
 <!-- AdminLTE App -->
 <script src="{{ asset('assets/js/adminlte.min.js')}}"></script>
+
 
 
 <!-- jQuery Mapael -->
@@ -170,6 +195,8 @@
         $('body').addClass('sidebar-collapse');
     });
 </script>
+
+
 
 </body>
 </html>

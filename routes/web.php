@@ -13,9 +13,9 @@ use App\Http\Controllers\AdminController;
 Route::get('/admin', [AdminController::class, 'index'])->name('dashboard-admin');
 
 
-
 use App\Http\Controllers\UsrController;
-Route::get('/', [UsrController::class, 'index'])->name('home');
+Route::get('/', [UsrController::class, 'index2'])->name('home');
+Route::get('/about', [UsrController::class, 'about'])->name('about');
 Route::get('/admin/data', [UsrController::class, 'pengguna'])->name("pengguna");
 Route::delete('/pengguna/{id}', [UsrController::class, 'destroy'])->name('pengguna.destroy');
 Route::get('/pengguna/{id}/edit', [UsrController::class, 'edit'])->name('pengguna.edit');
