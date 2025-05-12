@@ -1,5 +1,15 @@
 <x-usrlayout2>
 
+          <section id="hero" class="hero section dark-background" style="height: 450px;">
+
+        <img src="{{ asset(path: 'tem/img/bg3.jpg')}}" alt="" class="hero-bg" data-aos="fade-in">
+
+        <div class="container">
+          <div class="row gy-4 d-flex justify-content-between">
+            </div>
+          </div>
+        </div>
+      </section>
       <!-- About Section -->
       <section id="about" class="about section">
 
