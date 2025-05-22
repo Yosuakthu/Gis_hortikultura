@@ -20,13 +20,14 @@
                         <th>Elevasi</th>
                         <th>Kelompok Tani</th>
                         <th>Ketua Kelompok</th>
-                        <th>No HP Ketua</th>
                         <th>Alamat Ketua</th>
+                        <th>No HP Ketua</th>
                         <th>Komoditi</th>
                         <th>Varietas</th>
                         <th>Jenis Tanaman</th>
                         <th>Jumlah Bibit</th>
                         <th>GeoData</th>
+                        <th>images</th>
                         <th width="200px">Action</th>
                     </tr>
                 </thead>
@@ -60,6 +61,7 @@
                           {data: 'tanaman', name: 'tanaman'},
                           {data: 'jumb_bibit', name: 'jumb_bibit'},
                           {data: 'geojson_path', name: 'geojson_path'},
+                          {data: 'images', name: 'images'},
                           {data: 'action', name: 'action', orderable: false, searchable: false},
                       ]
                   });
@@ -68,6 +70,7 @@
 
                 $('#importdata').on('click', function () {
                 window.location.href = '{{ route("import-geo.form") }}';
+
 
             });
 
@@ -95,6 +98,12 @@
                 });
             }
         });
+
+      $('#datacsv').on('click', '.edit', function () {
+    var id = $(this).data('id');
+    window.location.href = 'update-geo/' + id ; 
+});
+
 
               </script>
 </div>

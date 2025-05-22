@@ -39,5 +39,10 @@ Route::delete('/showCsvTable/{id}', [PetaController::class, 'destroy'])->name('c
 Route::post('admin/importdata', [PetaController::class, 'importCSV'])->name('import-csv.import');
 Route::post('/import-geojson', [PetaController::class, 'importGeoJSON'])->name('import.geojson');
 Route::get('/admin/import-geo', [PetaController::class, 'showFormGeo'])->name('import-geo.form');
+Route::get('/admin/update-geo/{id}', [PetaController::class, 'showFormGeoUpdate'])->name('update-geo.form');
+Route::post('/update-geojson/{id}', [PetaController::class, 'updategeodata'])->name('geojson.update');
 Route::get('/admin/getgeojson', [PetaController::class, 'getGeoJson'])->name('getdata');
+Route::get('/admin/geodata/images-by-name-plant/{nama}/{tanaman}', [PetaController::class, 'getImagesByNameAndPlant']);
+
+
 

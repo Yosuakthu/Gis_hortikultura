@@ -8,7 +8,7 @@
           <div class="row gy-4 d-flex justify-content-between">
             {{-- <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center"> --}}
               <h2 data-aos="fade-up">Selamat Datang <br> Di Layananan Informasi Sebaran Lahan Pertanian Tanaman Hortikultura</h2>
-              <h5 data-aos="fade-up" data-aos-delay="100">WebGis Tanaman Holtikultura, Adalah Sebuah Sistem Informasi geografi Yang Menyajikan Data Lahan Pertanian Tanaman Holtikultura Yang Ada Pada Kabupaten Kepulauan Sangihe, beserta informasi nonspasial lainnya.</h5>
+              <h5 data-aos="fade-up" data-aos-delay="100">WebGis Tanaman Hortikultura, Adalah Sebuah Sistem Informasi geografi Yang Menyajikan Data Lahan Pertanian Tanaman Holtikultura Yang Ada Pada Kabupaten Kepulauan Sangihe, beserta informasi nonspasial lainnya.</h5>
               <div class="row gy-4" data-aos="fade-up" data-aos-delay="300">
               </div>
             </div>
@@ -153,5 +153,7 @@
 
         </div>
 
-      </section><!-- /Features Section -->
+      </section>
+
+<!-- /Features Section -->
 </x-usrlayout2>

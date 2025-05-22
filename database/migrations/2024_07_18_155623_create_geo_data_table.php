@@ -27,6 +27,9 @@ return new class extends Migration
             $table->string('varietas');
             $table->integer('jumb_bibit')->nullable();
             $table->string('geojson_path');
+            // di migrasi Laravel contoh:
+$table->string('images')->nullable()->change();
+
             // Tambahkan kolom lain sesuai kebutuhan
             $table->timestamps();
         });

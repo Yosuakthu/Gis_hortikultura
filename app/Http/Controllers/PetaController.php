@@ -19,12 +19,12 @@ class PetaController extends Controller
 
     public function usrpeta()
     {
-        return view('usrpeta',['titel' => 'Peta Zona']);
+        return view('usrpeta',['titel' => 'Peta Hortikultura']);
     }
 
     public function peta()
     {
-        return view('peta',['titel' => 'Peta Zona']);
+        return view('peta',['titel' => 'Peta Hortikultura']);
     }
 
     public function showForm()
@@ -35,17 +35,34 @@ class PetaController extends Controller
     //Star Note  https://docs.google.com/document/d/e/2PACX-1vTjuREUPY0Mf39ulOGH_Eh5DQMMm6xmsZXDC7vZ7vU1MnjaZ-y3vozqwanhRrBCzdb1SV-pyG1ttEyj/pub
     public function showCsvTable(Request $request)
     {
-        if ($request->ajax()) {
-            $data = GeoData::query();
-            return DataTables::of($data)
-            ->addColumn('action', function($row){
-                $editBtn = '<a href="javascript:void(0)" class="edit btn btn-warning btn-sm" data-id="'.$row->id.'">Edit</a>';
-                $deleteBtn = '<a href="javascript:void(0)" class="delete btn btn-danger btn-sm" data-id="'.$row->id.'">Delete</a>';
-                return $deleteBtn . ' ' .$editBtn;
-            })
-            ->addIndexColumn()
-            ->make(true);
+       if ($request->ajax()) {
+    $data = GeoData::query();
+    return DataTables::of($data)
+    ->addColumn('images', function ($row) {
+    if ($row->images && is_array($row->images)) {
+        $output = '';
+        foreach ($row->images as $img) {
+            $path = public_path('storage/images/' . $img);
+            if (file_exists($path)) {  // Cek apakah file gambar masih ada di storage
+                $url = asset('storage/images/' . $img);
+                $output .= '<img src="' . $url . '" width="50" class="img-thumbnail me-1">';
+            }
         }
+        return $output ?: 'No Image';  // Jika tidak ada gambar yang valid, tampilkan teks No Image
+    }
+    return 'No Image';
+})
+
+        ->addColumn('action', function ($row) {
+            $editBtn = '<a href="javascript:void(0)" class="edit btn btn-warning btn-sm" data-id="' . $row->id . '">Edit</a>';
+            $deleteBtn = '<a href="javascript:void(0)" class="delete btn btn-danger btn-sm" data-id="' . $row->id . '">Delete</a>';
+            return $deleteBtn . ' ' . $editBtn;
+        })
+        ->rawColumns(['images', 'action']) // Penting: biar HTML image dan tombol dirender
+        ->addIndexColumn()
+        ->make(true);
+}
+
         return view('datacsv',['titel' => 'Data Zonah Nilai Tanah']);
     }
     // End Note
@@ -105,6 +122,7 @@ return response()->json($geojsonArray);
         return view('import_geojson',['titel' => 'Import Data ']);
     }
 
+
     public function importGeoJSON(Request $request)
     {
 
@@ -152,11 +170,100 @@ try {
             'komoditi' => $request->komoditi,
             'varietas' => $request->varietas,
             'jumb_bibit' => $request->jumb_bibit,
+            'images' => '',
             'geojson_path' => $filePath
         ]);
 
         return redirect()->route('csv.table')->with('success', 'Data berhasil diimport!');
     }
+
+public function getImagesByNameAndPlant($nama, $tanaman)
+{
+    $data = GeoData::where('nama', $nama)
+                   ->where('tanaman', $tanaman)
+                   ->first();
+
+    if ($data && $data->images) {
+        return response()->json([
+            'images' => $data->images,
+        ]);
+    }
+
+    return response()->json([
+        'images' => [],
+    ]);
+}
+
+
+
+       public function showFormGeoUpdate($id)
+    {
+
+         $data = GeoData::findOrFail($id);
+         return view('update_geojson', compact('data'))->with('titel', 'Edit Data');
+    }
+
+
+
+
+    public function updategeodata(Request $request, $id)
+{
+    $data = GeoData::findOrFail($id);
+
+    $request->validate([
+        'geojson_file' => 'nullable|file|mimes:json,geojson',
+        'nama' => 'required|string',
+        'tanaman' => 'required|string',
+        'lokasi' => 'nullable|string',
+        'luas' => 'nullable|numeric',
+        'elevasi' => 'required|numeric',
+        'no_hp' => 'nullable|string',
+        'kelompok' => 'nullable|string',
+        'leader' => 'nullable|string',
+       'no_leader' => 'nullable|string',
+        'al_leader' => 'nullable|string',
+        'komoditi' => 'required|string',
+        'varietas' => 'required|string',
+        'jumb_bibit' => 'nullable|integer',
+        'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+    ]);
+
+    $data->update($request->only([
+        'nama', 'tanaman', 'lokasi', 'luas', 'elevasi',
+        'no_hp', 'kelompok', 'leader', 'no_leader',
+        'al_leader', 'komoditi', 'varietas', 'jumb_bibit'
+    ]));
+
+
+    $existingImages = $data->images ?? [];
+
+
+    if ($request->has('remove_images')) {
+        foreach ($request->remove_images as $removeImage) {
+            if (($key = array_search($removeImage, $existingImages)) !== false) {
+                unset($existingImages[$key]);
+                Storage::disk('public')->delete('images/' . $removeImage);
+            }
+        }
+    }
+
+
+if ($request->hasFile('images')) {
+    $newImages = [];
+    foreach ($request->file('images') as $file) {
+        $filename = $file->store('images', 'public');
+        $newImages[] = basename($filename);
+    }
+    $data->images = array_values(array_merge($existingImages, $newImages));
+} else {
+    $data->images = array_values($existingImages);
+}
+
+$data->save();
+
+    return redirect()->route('csv.table')->with('success', 'Data berhasil diperbarui!');
+}
+
 
 
 

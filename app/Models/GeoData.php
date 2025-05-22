@@ -24,6 +24,11 @@ class GeoData extends Model
         'varietas',
         'jumb_bibit',
         'geojson_path',
+        'images'
 
+    ];
+
+       protected $casts = [
+        'images' => 'array',
     ];
 }

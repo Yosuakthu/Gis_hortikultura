@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>WebGis-Holtikultura</title>
+  <title>WebGis-Hortikultura</title>
   <meta name="description" content="">
   <meta name="keywords" content="">
 
@@ -43,31 +43,70 @@
     }
 
     .sidebar2 {
-        position: fixed;
-        right: -300px;
-        top: 0;
-        width: 300px;
-        height: 100%;
-        background: white;
-        box-shadow: -2px 0px 5px rgba(0,0,0,0.3);
-        padding: 15px;
-        transition: right 0.3s;
-        z-index: 1000;
+    position: fixed;
+    top: 125px;
+    bottom: 50px;
+    right: -470px; /* disembunyikan default */
+    width: 450px;
+   background:  url('{{ asset('img/bgDL.jpg')}}');
+  background-size: cover;
+  background-position: center;
+  border-radius: 10px;
+  transition: right 0.3s ease;
+  z-index: 1050;
+  overflow-y: auto;
+  margin-right: 4px;
+}
+    .sidebar2 h5 {
+    font-size: 36px;
+    font-weight: bold;
+    margin: 20px 0px;
     }
-    .sidebar2.active {
-        right: 0;
+     .sidebar2 dl dt {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 18px;
     }
-    #closeSidebar {
-        background: white ;
-        color: rgb(5, 5, 5);
-        border: none;
-        padding: 5px 10px;
-        font-size: 18px;
-        cursor: pointer;
-        position: absolute;
-        top: 10px;
-        right: 10px;
+      .sidebar2 dl dd {
+    font-size: 16px;
+    margin-bottom: 18px;
     }
+
+      .sidebar2.active {
+        right: 35px;
+    }
+
+  .sidebar2 .card {
+  background-color: transparent;
+  border: none;
+  height: 100px;       /* Mengikuti lebar kontainer */
+  padding: 0 3px;   /* Sedikit ruang kanan-kiri */
+  box-sizing: border-box;
+}
+
+    .sidebar2 p {
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: #555;
+}
+
+
+ #close {
+  background: transparent;
+  color: #333;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  z-index: 1100;
+  transition: color 0.2s;
+}
+
+#close:hover {
+  color: #dc3545; /* merah saat hover */
+}
 
 .navbar-info li {
   display: flex;
@@ -85,9 +124,11 @@
 }
 .weather-info {
       position: absolute;
-      bottom: 30px;
+      bottom: 20px;
       left: 20px;
-      background-color: rgba(255, 255, 255, 0.9);
+      background:  url('{{ asset('img/bgDL.jpg')}}');
+       background-size: cover;
+  background-position: center;
       padding: 15px;
       border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -99,7 +140,8 @@
     .weather-info h3 {
       margin: 0;
       margin-bottom: 10px;
-      font-size: 18px;
+      font-size: 20px;
+      font-weight: bold;
     }
 
     .weather-info ul {
@@ -129,6 +171,8 @@
     border: 3px solid rgb(255, 167, 36)
 }
 
+}
+
    </style>
 </head>
 <body class="index-page">
@@ -139,18 +183,19 @@
           <a href="index.html" class="logo d-flex align-items-center me-auto">
             <!-- Uncomment the line below if you also wish to use an image logo -->
             <!-- <img src="assets/img/logo.png" alt=""> -->
-            <h1 class="sitename">GIS Tanaman Holtikultura</h1>
+            <h1 class="sitename">GIS Tanaman Hortikultura</h1>
           </a>
 
           <nav id="navmenu" class="navmenu">
             <ul>
-              <li><a href="/" class="active">Home<br></a></li>
-              <li><a href="/about">About</a></li>
-              <li><a href="/peta">Maps</a></li>
-              <li><a href="admin/login">Login</a></li>
-            </ul>
-            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-          </nav>
+                <li><a href="/" class="active">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/peta">Maps</a></li>
+                <li><a href="admin/login">Login</a></li>
+             </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+            </nav>
+
 
         </div>
       </header>
@@ -207,5 +252,39 @@
 </script>
 
 </body>
+
+<!-- Footer Section -->
+<footer class="bg-dark text-light py-4 mt-5">
+  <div class="container">
+    <div class="row justify-content-between align-items-start">
+      <!-- Info Kiri -->
+      <div class="col-md-4 mb-3">
+        <p class="mb-1">Pemerintah Kabupaten Kepulauan Sangihe</p>
+        <h5 class="mb-3 text-primary">Dinas Pertanian</h5>
+      </div>
+
+      <!-- Kontak Tengah -->
+      <div class="col-md-4 mb-3">
+        <p><i class="bi bi-geo-alt-fill text-info me-2"></i>Jln. Jend. Sudirman No. 72 Tahuna - Sulawesi Utara</p>
+        <p><i class="bi bi-telephone-fill text-info me-2"></i>0432 - 21658</p>
+        <p><i class="bi bi-envelope-fill text-info me-2"></i>distan@sangihekab.go.id</p>
+      </div>
+
+      <!-- Sosial Media Kanan -->
+      <div class="col-md-4 text-md-end">
+        <a href="#" class="btn btn-primary me-2"><i class="bi bi-facebook"></i></a>
+        <a href="#" class="btn btn-danger me-2"><i class="bi bi-instagram"></i></a>
+        <a href="#" class="btn btn-danger"><i class="bi bi-youtube"></i></a>
+      </div>
+    </div>
+
+    <hr class="my-3" style="border-color: #777;">
+
+    <div class="text-center">
+      <small>Hak Cipta &copy; 2025 </small>
+    </div>
+  </div>
+</footer>
+
 
 </html>

@@ -30,32 +30,72 @@
       height: 858px;
     }
 
-    .sidebar2 {
-        position: fixed;
-        right: -300px;
-        top: 0;
-        width: 300px;
-        height: 100%;
-        background: white;
-        box-shadow: -2px 0px 5px rgba(0,0,0,0.3);
-        padding: 15px;
-        transition: right 0.3s;
-        z-index: 1000;
+  .sidebar2 {
+    position: fixed;
+    top: 125px;
+    bottom: 50px;
+    right: -470px; /* disembunyikan default */
+    width: 450px;
+   background:  url('{{ asset('img/bgDL.jpg')}}');
+  background-size: cover;
+  background-position: center;
+  border-radius: 10px;
+  transition: right 0.3s ease;
+  z-index: 1050;
+  overflow-y: auto;
+  margin-right: 4px;
+}
+    .sidebar2 h5 {
+    font-size: 36px;
+    font-weight: bold;
+    margin: 20px 0px;
     }
-    .sidebar2.active {
-        right: 0;
+     .sidebar2 dl dt {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 18px;
     }
-    #closeSidebar {
-        background: white ;
-        color: rgb(5, 5, 5);
-        border: none;
-        padding: 5px 10px;
-        font-size: 18px;
-        cursor: pointer;
-        position: absolute;
-        top: 10px;
-        right: 10px;
+      .sidebar2 dl dd {
+    font-size: 16px;
+    margin-bottom: 18px;
     }
+
+      .sidebar2.active {
+        right: 35px;
+    }
+
+  .sidebar2 .card {
+  background-color: transparent;
+  border: none;
+  height: 100%;       /* Mengikuti lebar kontainer */
+  padding: 0 3px; 
+  margin: 0;
+  box-sizing: border-box;
+}
+
+    .sidebar2 p {
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: #555;
+}
+
+
+ #close {
+  background: transparent;
+  color: #333;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  z-index: 1100;
+  transition: color 0.2s;
+}
+
+#close:hover {
+  color: #dc3545; /* merah saat hover */
+}
 
 .navbar-info li {
   display: flex;
@@ -75,7 +115,9 @@
       position: absolute;
       bottom: 20px;
       left: 20px;
-      background-color: rgba(255, 255, 255, 0.9);
+      background:  url('{{ asset('img/bgDL.jpg')}}');
+       background-size: cover;
+  background-position: center;
       padding: 15px;
       border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -87,7 +129,8 @@
     .weather-info h3 {
       margin: 0;
       margin-bottom: 10px;
-      font-size: 18px;
+      font-size: 20px;
+      font-weight: bold;
     }
 
     .weather-info ul {
@@ -117,6 +160,20 @@
     border: 3px solid rgb(255, 167, 36)
 }
 
+
+  .img-wrapper {
+        position: relative;
+    }
+
+    .delete-checkbox {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        z-index: 10;
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+    }
    </style>
 
 
@@ -194,6 +251,7 @@
     $(document).ready(function () {
         $('body').addClass('sidebar-collapse');
     });
+
 </script>
 
 

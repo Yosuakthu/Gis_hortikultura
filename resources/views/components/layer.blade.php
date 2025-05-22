@@ -4,31 +4,66 @@
         <h3>Informasi Cuaca</h3>
         <ul>
           {{-- <li><span><strong>Lokasi:</strong></span> <span id="location">Loading...</span></li> --}}
-          <li><span><strong>Suhu:</strong></span> <span id="temperature">Loading...</span></li>
-          <li><span><strong>Kelembapan:</strong></span> <span id="humidity">Loading...</span></li>
-          <li><span><strong>Angin:</strong></span> <span id="wind">Loading...</span></li>
-          <li><span><strong>Deskripsi:</strong></span> <span id="description">Loading...</span></li>
+          <li><span><i class="fas fa-temperature-high"></i><strong> Suhu:</strong></span> <span id="temperature">Loading...</span></li>
+          <li><span><i class="fas fa-tint"></i><strong> Kelembapan:</strong></span> <span id="humidity">Loading...</span></li>
+          <li><span><i class="fas fa-wind"></i><strong> Angin:</strong></span> <span id="wind">Loading...</span></li>
+          <li><span><i class="fas fa-cloud-sun"></i><strong> Deskripsi:</strong></span> <span id="description">Loading...</span></li>
         </ul>
       </div>
 
-      <div id="sidebar2" class="sidebar2">
-        <button id="closeSidebar">&times;</button>
-        <h3>Detail Lokasi</h3>
+     <div id="sidebar2" class="sidebar2 shadow">
+  <button id="close">&times;</button>
 
-        <p><strong>Nama:</strong> <span id="sidebar-nama"></span></p>
-        <p><strong>No HP:</strong> <span id="sidebar-no_hp"></span></p>
-        <p><strong>Nama Kebun:</strong> <span id="sidebar-nama_kebun"></span></p>
-        <p><strong>Luas:</strong> <span id="sidebar-luas"></span> ha</p>
-        <p><strong>Elevasi:</strong> <span id="sidebar-elevasi"></span> m</p>
-        <p><strong>Kelompok Tani:</strong> <span id="sidebar-kelompok"></span></p>
-        <p><strong>Ketua Kelompok:</strong> <span id="sidebar-leader"></span></p>
-        <p><strong>No HP Ketua:</strong> <span id="sidebar-no_leader"></span></p>
-        <p><strong>Alamat Ketua:</strong> <span id="sidebar-al_leader"></span></p>
-        <p><strong>Komoditi:</strong> <span id="sidebar-komoditi"></span></p>
-        <p><strong>Varietas:</strong> <span id="sidebar-varietas"></span></p>
-        <p><strong>Jenis Tanaman:</strong> <span id="sidebar-tanaman"></span></p>
-        <p><strong>Jumlah Bibit:</strong> <span id="sidebar-jumb_bibit"></span></p>
-    </div>
+  <div class="card p-4">
+    <h5><i class="fas fa-map-marker-alt me-2"></i> Detail Lokasi</h5>
+
+    <dl class="row">
+      <dt class="col-sm-5">Nama:</dt>
+      <dd class="col-sm-7" id="sidebar-nama"></dd>
+
+      <dt class="col-sm-5">No HP:</dt>
+      <dd class="col-sm-7" id="sidebar-no_hp"></dd>
+
+      <dt class="col-sm-5">Nama Kebun:</dt>
+      <dd class="col-sm-7" id="sidebar-nama_kebun"></dd>
+
+      <dt class="col-sm-5">Luas:</dt>
+      <dd class="col-sm-7"><span id="sidebar-luas"></span> ha</dd>
+
+      <dt class="col-sm-5">Elevasi:</dt>
+      <dd class="col-sm-7"><span id="sidebar-elevasi"></span> m</dd>
+
+      <dt class="col-sm-5">Kelompok Tani:</dt>
+      <dd class="col-sm-7" id="sidebar-kelompok"></dd>
+
+      <dt class="col-sm-5">Ketua Kelompok:</dt>
+      <dd class="col-sm-7" id="sidebar-leader"></dd>
+
+      <dt class="col-sm-5">No HP Ketua:</dt>
+      <dd class="col-sm-7" id="sidebar-no_leader"></dd>
+
+      <dt class="col-sm-5">Alamat Ketua:</dt>
+      <dd class="col-sm-7" id="sidebar-al_leader"></dd>
+
+      <dt class="col-sm-5">Komoditi:</dt>
+      <dd class="col-sm-7" id="sidebar-komoditi"></dd>
+
+      <dt class="col-sm-5">Varietas:</dt>
+      <dd class="col-sm-7" id="sidebar-varietas"></dd>
+
+      <dt class="col-sm-5">Jenis Tanaman:</dt>
+      <dd class="col-sm-7" id="sidebar-tanaman"></dd>
+
+      <dt class="col-sm-5">Jumlah Bibit:</dt>
+      <dd class="col-sm-7" id="sidebar-jumb_bibit"></dd>
+
+     <dt class="col-sm-5">Gambar:</dt>
+<dd class="col-sm-7" id="sidebar-images" class="d-flex flex-wrap gap-1"></dd>
+
+    </dl>
+  </div>
+</div>
+
 
 
 </div>
@@ -83,11 +118,22 @@ subdomains:['mt0','mt1','mt2','mt3']
 
 
 
+
         // Load GeoJSON data
         fetch('/admin/getgeojson')
     .then(response => response.json())
     .then(data => {
+        console.log("Data yang diambil:", data);
         var geojsonLayer = L.geoJSON(data, {
+            style: function (feature) {
+    if (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon") {
+      return {
+        color: "#3388ff",
+        weight: 2,
+        fillOpacity: 0.4
+      };
+    }
+  },
             pointToLayer: function (feature, latlng) {
                 var jenisTanaman = feature.properties.tanaman
                     ? feature.properties.tanaman.trim().toLowerCase()
@@ -124,6 +170,9 @@ subdomains:['mt0','mt1','mt2','mt3']
                 return L.marker(latlng, { icon: customIcon });
             },
             onEachFeature: function (feature, layer) {
+
+                 console.log("Tipe geometry:", feature.geometry.type);
+
                 layer.on('click', function () {
                     // Tampilkan sidebar saat marker diklik
                     document.getElementById("sidebar2").classList.add("active");
@@ -142,6 +191,39 @@ subdomains:['mt0','mt1','mt2','mt3']
                     document.getElementById("sidebar-varietas").textContent = feature.properties.varietas || "Tidak Ada";
                     document.getElementById("sidebar-tanaman").textContent = feature.properties.tanaman || "Tidak Ada";
                     document.getElementById("sidebar-jumb_bibit").textContent = feature.properties.jumb_bibit || "Tidak Ada";
+                    // Ambil gambar dari controller
+      const nama = feature.properties.Nama;
+const tanaman = feature.properties.tanaman;
+
+if (nama && tanaman) {
+    fetch(`/admin/geodata/images-by-name-plant/${encodeURIComponent(nama)}/${encodeURIComponent(tanaman)}`)
+        .then(response => response.json())
+        .then(data => {
+            const imgContainer = document.getElementById("sidebar-images");
+            imgContainer.innerHTML = '';
+
+            if (data.images && data.images.length > 0) {
+                data.images.forEach(img => {
+                    const imgElem = document.createElement('img');
+                    imgElem.src = `/storage/images/${img}`;
+                    imgElem.className = 'img-thumbnail me-1';
+                    imgElem.style.width = '80px';
+                    imgContainer.appendChild(imgElem);
+                });
+            } else {
+                imgContainer.textContent = 'Tidak ada gambar';
+            }
+        })
+        .catch(() => {
+            imgContainer.textContent = 'Gagal memuat gambar';
+        });
+} else {
+    imgContainer.textContent = 'Tidak ada nama atau jenis tanaman';
+}
+
+
+
+
                 });
             }
         }).addTo(maps);
@@ -156,14 +238,20 @@ subdomains:['mt0','mt1','mt2','mt3']
     .catch(error => console.error('Error loading GeoJSON:', error));
 
 
+        let imagesContainer = document.getElementById('sidebar-images');
+imagesContainer.innerHTML = '';
+
+
+
+
    // Fungsi untuk menutup sidebar
-            document.getElementById("closeSidebar").addEventListener("click", function () {
+            document.getElementById("close").addEventListener("click", function () {
                 document.getElementById("sidebar2").classList.remove("active");
             });
 
      // Fungsi untuk mengambil data cuaca
      async function fetchWeather(lat, lon) {
-  try {
+    try {
     const apiKey = 'e9ac85b92a87dac020fe642ca7984888';
     const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&lang=id&appid=${apiKey}`;
     console.log('Fetching weather data from URL:', url);
@@ -212,5 +300,7 @@ subdomains:['mt0','mt1','mt2','mt3']
 
   // Panggilan awal
   fetchWeather(3.64506,125.4326562);
+
+  
 
     </script>

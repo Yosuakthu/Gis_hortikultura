@@ -3,7 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>GisZNT-Login</title>
+  <title>WebGis-Hortikultura</title>
+<link href="{{ asset('assets/main/img/logo-TI.png')}}" rel="icon">
+
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
@@ -13,11 +15,30 @@
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ asset('assets/css/adminlte.min.css') }}">
 
+    <style>
+    body {
+        margin: 0;
+        padding: 0;
+        background: url('{{ asset('tem/img/bg.jpg') }}') no-repeat center center fixed;
+        background-size: cover;
+        font-family: Arial, sans-serif;
+    }
+    .login-container {
+        background-color: rgba(255, 255, 255, 0.9); /* semi-transparan putih */
+        padding: 30px;
+        border-radius: 10px;
+        max-width: 400px;
+        margin: 100px auto;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+</style>
+
+
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
-    <a href="/">GIS Hortikultura</a>
+    <a href="/"><b>GIS-Hortikultura</b></a>
   </div>
   <!-- /.login-logo -->
   <div class="card">
@@ -29,6 +50,7 @@
           {{ session('error') }}
         </div>
       @endif
+
 
       <form action="{{ route('logproses') }}" method="post">
         @csrf
@@ -61,8 +83,9 @@
         </div>
       </form>
 
+
       <p class="mb-0">
-        <a href="/" class="text-center">Kembali Ke Halaman Dashboard</a>
+        <a href="/" class="text-center">Kembali Ke Halaman Beranda</a>
       </p>
     </div>
     <!-- /.login-card-body -->
@@ -78,5 +101,3 @@
 <script src="{{ asset('assets/js/adminlte.min.js') }}"></script>
 </body>
 </html>
-
-

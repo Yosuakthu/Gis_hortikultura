@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\GeoData;
-use Illuminate\Support\Facades\DB; 
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 
 
@@ -17,6 +18,7 @@ class AdminController extends Controller
     {
         $user = session('user');
          $total = GeoData::count();
+          $totaluser = User::count();
         $totalCabe = GeoData::where('tanaman', 'cabe')->count();
         $totalTomat = GeoData::where('tanaman', 'tomat')->count();
          $totalTerong = GeoData::where('tanaman', 'Terong')->count();
@@ -37,7 +39,8 @@ class AdminController extends Controller
             'ketimun' => $totalKetimun,
             'buncis' => $totalBuncis,
             'caisin' => $totalCaisin,
-             'jenisTanaman' => $jenisTanaman
+             'jenisTanaman' => $jenisTanaman,
+             'totaluser' => $totaluser,
         ]);
     }
 

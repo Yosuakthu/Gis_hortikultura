@@ -8,33 +8,71 @@
 </div>
 </div>
 
+     <div class="row">
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+              <span class="info-box-icon bg-info elevation-1"><i class="fas fa-globe"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Website User</span>
+                <span class="info-box-number">
+                  <a href="/">Lihat Halaman</a>
+                </span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box mb-3">
+              <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-leaf"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Jenis Tanaman</span>
+                <span class="info-box-number">6</span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+
+          <!-- fix for small devices only -->
+          <div class="clearfix hidden-md-up"></div>
+
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box mb-3">
+              <span class="info-box-icon bg-success elevation-1"><i class="fas fa-seedling"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Total Data Tanaman</span>
+                <span class="info-box-number">{{ $totalTanaman }}</span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box mb-3">
+              <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-users"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Pengguna</span>
+                <span class="info-box-number">{{ $totaluser }}</span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+
     <!-- Small boxes (Stat box) -->
     <div class="row">
-  <div class="col-md-3 col-6">
-    <div class="small-box bg-success">
-      <div class="inner">
-        <h3>6</h3>
-        <p>Jenis Tanaman</p>
-      </div>
-      <div class="icon">
-        <i class="ion ion-bag"></i>
-      </div>
-    </div>
-  </div>
-
-  <div class="col-md-3 col-6">
-    <div class="small-box bg-success">
-      <div class="inner">
-        <h3> {{ $totalTanaman }} </h3>
-        <p>Total Data Tanaman</p>
-      </div>
-      <div class="icon">
-        <i class="ion ion-stats-bars"></i>
-      </div>
-    </div>
-  </div>
-
-  <div class="col-md-3 col-6">
+  <div class="col-md-4 col-6">
     <div class="small-box bg-info">
       <div class="inner">
         <h3> {{ $cabe }} </h3>
@@ -46,7 +84,7 @@
     </div>
   </div>
 
-  <div class="col-md-3 col-6">
+  <div class="col-md-4 col-6">
     <div class="small-box bg-info">
       <div class="inner">
         <h3> {{ $tomat }} </h3>
@@ -57,7 +95,7 @@
       </div>
     </div>
   </div>
-   <div class="col-md-3 col-6">
+   <div class="col-md-4 col-6">
     <div class="small-box bg-info">
       <div class="inner">
         <h3> {{ $terong }} </h3>
@@ -69,7 +107,7 @@
     </div>
   </div>
 
-  <div class="col-md-3 col-6">
+  <div class="col-md-4 col-6">
     <div class="small-box bg-info">
       <div class="inner">
         <h3> {{ $ketimun }} </h3>
@@ -80,7 +118,7 @@
       </div>
     </div>
   </div>
-   <div class="col-md-3 col-6">
+   <div class="col-md-4 col-6">
     <div class="small-box bg-info">
       <div class="inner">
         <h3> {{ $buncis }} </h3>
@@ -92,7 +130,7 @@
     </div>
   </div>
 
-  <div class="col-md-3 col-6">
+  <div class="col-md-4 col-6">
     <div class="small-box bg-info">
       <div class="inner">
         <h3> {{ $caisin }} </h3>
