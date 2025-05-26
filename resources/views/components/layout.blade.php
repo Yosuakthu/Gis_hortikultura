@@ -68,7 +68,7 @@
   background-color: transparent;
   border: none;
   height: 100%;       /* Mengikuti lebar kontainer */
-  padding: 0 3px; 
+  padding: 0 3px;
   margin: 0;
   box-sizing: border-box;
 }
@@ -174,6 +174,30 @@
         height: 18px;
         cursor: pointer;
     }
+
+     .legend {
+  background: #fff;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  color: #333;
+}
+
+.legend h4 {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.legend-color {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+  vertical-align: middle;
+  border: 1px solid #ccc;
+}
+
    </style>
 
 

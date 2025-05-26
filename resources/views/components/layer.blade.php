@@ -9,6 +9,19 @@
           <li><span><i class="fas fa-wind"></i><strong> Angin:</strong></span> <span id="wind">Loading...</span></li>
           <li><span><i class="fas fa-cloud-sun"></i><strong> Deskripsi:</strong></span> <span id="description">Loading...</span></li>
         </ul>
+
+         <div class="legend mt-3">
+    <h4><i class="fas fa-palette"></i> Warna Tanaman</h4>
+    <ul style="list-style: none; padding-left: 0;">
+      <li><span class="legend-color" style="background-color: #ff0000;"></span> Cabe</li>
+    <li><span class="legend-color" style="background-color: #fa8072;"></span> Tomat</li>
+    <li><span class="legend-color" style="background-color: #02873c;"></span> Ketimun</li>
+    <li><span class="legend-color" style="background-color: #610378;"></span> Terong</li>
+    <li><span class="legend-color" style="background-color: #089f4a;"></span> Buncis</li>
+    <li><span class="legend-color" style="background-color: #1dfc7f;"></span> Caisin</li>
+    <li><span class="legend-color" style="background-color: #3388ff;"></span> Lainnya</li>
+    </ul>
+  </div>
       </div>
 
      <div id="sidebar2" class="sidebar2 shadow">
@@ -62,6 +75,8 @@
 
     </dl>
   </div>
+
+
 </div>
 
 
@@ -127,16 +142,36 @@ function loadGeoJSON(data) {
 
     geojsonLayer = L.geoJSON(data, {
         style: function(feature) {
-            // Styling untuk polygon dan multipolygon
-            if (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon") {
-                return {
-                    color: "#3388ff",
-                    weight: 2,
-                    fillOpacity: 0.4
-                };
+        // Styling untuk polygon dan multipolygon
+        if (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon") {
+            var jenisTanaman = feature.properties.tanaman
+                ? feature.properties.tanaman.trim().toLowerCase()
+                : "default";
+
+            var warna = "#3388ff"; //
+            if (jenisTanaman === "cabe") {
+                warna = "#ff0000";
+            } else if (jenisTanaman === "tomat") {
+                warna = "#fa8072";
+            }else if (jenisTanaman === "ketimun") {
+                warna = "#02873c";
+            }else if (jenisTanaman === "terong") {
+                warna = "#610378";
+            } else if (jenisTanaman === "buncis") {
+                warna = "#089f4a";
+            } else if (jenisTanaman === "caisin") {
+                warna = "#1dfc7f";
             }
-            return {};
-        },
+
+            return {
+                color: warna,      // warna garis tepi (opsional, bisa disesuaikan)
+                fillColor: warna,      // warna isi polygon
+                weight: 2,
+                fillOpacity: 0.4
+            };
+        }
+        return {};
+    },
         pointToLayer: function(feature, latlng) {
             // Ambil jenis tanaman (lowercase dan trim)
             var jenisTanaman = feature.properties.tanaman
@@ -177,8 +212,6 @@ function loadGeoJSON(data) {
             layer.on('click', function () {
                 // Tampilkan sidebar
                 document.getElementById("sidebar2").classList.add("active");
-
-                // Isi data sidebar dari feature properties
                 document.getElementById("sidebar-nama").textContent = feature.properties.Nama || feature.properties.nama || "Tidak Ada";
                 document.getElementById("sidebar-no_hp").textContent = feature.properties.no_hp || "Tidak Ada";
                 document.getElementById("sidebar-nama_kebun").textContent = feature.properties.lokasi || "Tidak Ada";
