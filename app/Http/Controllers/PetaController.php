@@ -70,52 +70,43 @@ class PetaController extends Controller
     // Star Note  https://docs.google.com/document/d/e/2PACX-1vTn1Yyueno4u0I1PnHbzgBrrSb2bWNuIX8wAR0mS1Ll47f3EXZ9bPRK_CPIsYfr2IEUtenpdR5KEfz9/pub
     public function getGeoJson()
     {
-      // Ambil semua data dari database
-$geoDataList = GeoData::all();
+        $geoDataList = GeoData::all();
+        $geojsonArray = [
+            "type" => "FeatureCollection",
+            "features" => []
+        ];
 
-// Struktur dasar GeoJSON
-$geojsonArray = [
-    "type" => "FeatureCollection",
-    "features" => []
-];
+        foreach ($geoDataList as $geoData) {
+            $filePath = $geoData->geojson_path;
 
-foreach ($geoDataList as $geoData) {
-    // Ambil path file GeoJSON dari database
-    $filePath = $geoData->geojson_path;
+            if (Storage::exists($filePath)) {
+                $geojsonContent = Storage::get($filePath);
+                $geojsonDecoded = json_decode($geojsonContent, true);
 
-    // Periksa apakah file ada di storage
-    if (Storage::exists($filePath)) {
-        $geojsonContent = Storage::get($filePath);
-        $geojsonDecoded = json_decode($geojsonContent, true);
+                if (isset($geojsonDecoded['features'])) {
+                    foreach ($geojsonDecoded['features'] as &$feature) {
+                        $feature['properties']['tanaman'] = $geoData->tanaman;
+                        $feature['properties']['lokasi'] = $geoData->lokasi;
+                        $feature['properties']['luas'] = $geoData->luas;
+                        $feature['properties']['elevasi'] = $geoData->elevasi;
+                        $feature['properties']['no_hp'] = $geoData->no_hp;
+                        $feature['properties']['kelompok'] = $geoData->kelompok;
+                        $feature['properties']['leader'] = $geoData->leader;
+                        $feature['properties']['no_leader'] = $geoData->no_leader;
+                        $feature['properties']['al_leader'] = $geoData->al_leader;
+                        $feature['properties']['komoditi'] = $geoData->komoditi;
+                        $feature['properties']['varietas'] = $geoData->varietas;
+                        $feature['properties']['jumb_bibit'] = $geoData->jumb_bibit;
 
-        // Periksa apakah file valid dan memiliki fitur
-        if (isset($geojsonDecoded['features'])) {
-            foreach ($geojsonDecoded['features'] as &$feature) {
-                // Tambahkan data dari database ke dalam properties GeoJSON
-                $feature['properties']['tanaman'] = $geoData->tanaman;
-                $feature['properties']['lokasi'] = $geoData->lokasi;
-                $feature['properties']['luas'] = $geoData->luas;
-                $feature['properties']['elevasi'] = $geoData->elevasi;
-                $feature['properties']['no_hp'] = $geoData->no_hp;
-                $feature['properties']['kelompok'] = $geoData->kelompok;
-                $feature['properties']['leader'] = $geoData->leader;
-                $feature['properties']['no_leader'] = $geoData->no_leader;
-                $feature['properties']['al_leader'] = $geoData->al_leader;
-                $feature['properties']['komoditi'] = $geoData->komoditi;
-                $feature['properties']['varietas'] = $geoData->varietas;
-                $feature['properties']['jumb_bibit'] = $geoData->jumb_bibit;
-
-                // Tambahkan fitur yang sudah diperbarui ke dalam GeoJSON utama
-                $geojsonArray['features'][] = $feature;
+                        $geojsonArray['features'][] = $feature;
+                    }
+                }
             }
         }
-    }
-}
 
-// Kembalikan dalam format JSON
-return response()->json($geojsonArray);
-
+        return response()->json($geojsonArray); // ✅ Pindah ke sini
     }
+
 
     public function showFormGeo()
     {
@@ -151,7 +142,7 @@ try {
 
 
         // Simpan file
-        $filePath = $request->file('geojson_file')->store('geojson_files');
+        $filePath = $request->file('geojson_file')->store('geojson_files','public');
 
 
 
@@ -235,6 +226,15 @@ public function getImagesByNameAndPlant($nama, $tanaman)
     ]));
 
 
+    if ($request->hasFile('geojson_file')) {
+    $path = $request->file('geojson_file')->store('geojson', 'public');
+    $data->geojson_path = $path;
+
+    Storage::put($path, file_get_contents($request->file('geojson_file')->getRealPath()));
+}
+
+
+
     $existingImages = $data->images ?? [];
 
 
@@ -248,16 +248,24 @@ public function getImagesByNameAndPlant($nama, $tanaman)
     }
 
 
+// Pastikan existingImages adalah array
+if (!is_array($existingImages)) {
+    $existingImages = [];
+}
+
+// Inisialisasi newImages
+$newImages = [];
+
 if ($request->hasFile('images')) {
-    $newImages = [];
     foreach ($request->file('images') as $file) {
         $filename = $file->store('images', 'public');
         $newImages[] = basename($filename);
     }
-    $data->images = array_values(array_merge($existingImages, $newImages));
-} else {
-    $data->images = array_values($existingImages);
 }
+
+// Gabungkan array dan simpan kembali ke $data->images
+$data->images = array_values(array_merge($existingImages, $newImages));
+
 
 $data->save();
 

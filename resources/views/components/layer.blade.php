@@ -116,124 +116,132 @@ subdomains:['mt0','mt1','mt2','mt3']
     var layerControl = L.control.layers(baseMaps, null, { position: "topleft" }).addTo(maps);
 
 
+let geojsonLayer;  // Variabel global untuk layer GeoJSON
 
+// Fungsi untuk load dan render GeoJSON ke peta
+function loadGeoJSON(data) {
+    // Hapus layer lama jika ada
+    if (geojsonLayer) {
+        maps.removeLayer(geojsonLayer);
+    }
 
+    geojsonLayer = L.geoJSON(data, {
+        style: function(feature) {
+            // Styling untuk polygon dan multipolygon
+            if (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon") {
+                return {
+                    color: "#3388ff",
+                    weight: 2,
+                    fillOpacity: 0.4
+                };
+            }
+            return {};
+        },
+        pointToLayer: function(feature, latlng) {
+            // Ambil jenis tanaman (lowercase dan trim)
+            var jenisTanaman = feature.properties.tanaman
+                ? feature.properties.tanaman.trim().toLowerCase()
+                : "default";
 
-        // Load GeoJSON data
-        fetch('/admin/getgeojson')
+            // Tentukan icon berdasarkan jenis tanaman
+            var iconUrl = "";
+            if (jenisTanaman === "tomat") {
+                iconUrl = "../img/Tomato.png";
+            } else if (jenisTanaman === "cabe") {
+                iconUrl = "../img/cabe.png";
+            } else if (jenisTanaman === "ketimun") {
+                iconUrl = "../img/timun.jpg";
+            } else if (jenisTanaman === "terong") {
+                iconUrl = "../img/terong.jpg";
+            } else if (jenisTanaman === "buncis") {
+                iconUrl = "../img/buncis.jpg";
+            } else if (jenisTanaman === "caisin") {
+                iconUrl = "../img/caisin.jpg";
+            } else {
+                iconUrl = "../img/logo.png";
+            }
+
+            // Custom icon dengan gambar
+            var customIcon = L.divIcon({
+                className: "custom-marker",
+                html: `<div class="marker-container" style="background-image: url('${iconUrl}'); width: 40px; height: 40px;"></div>`,
+                iconSize: [40, 40],
+                iconAnchor: [20, 40],
+                popupAnchor: [0, -40]
+            });
+
+            return L.marker(latlng, { icon: customIcon });
+        },
+        onEachFeature: function(feature, layer) {
+            // Event klik marker / polygon
+            layer.on('click', function () {
+                // Tampilkan sidebar
+                document.getElementById("sidebar2").classList.add("active");
+
+                // Isi data sidebar dari feature properties
+                document.getElementById("sidebar-nama").textContent = feature.properties.Nama || feature.properties.nama || "Tidak Ada";
+                document.getElementById("sidebar-no_hp").textContent = feature.properties.no_hp || "Tidak Ada";
+                document.getElementById("sidebar-nama_kebun").textContent = feature.properties.lokasi || "Tidak Ada";
+                document.getElementById("sidebar-luas").textContent = feature.properties.luas || "Tidak Ada";
+                document.getElementById("sidebar-elevasi").textContent = feature.properties.elevasi || "Tidak Ada";
+                document.getElementById("sidebar-kelompok").textContent = feature.properties.kelompok || "Tidak Ada";
+                document.getElementById("sidebar-leader").textContent = feature.properties.leader || "Tidak Ada";
+                document.getElementById("sidebar-no_leader").textContent = feature.properties.no_leader || "Tidak Ada";
+                document.getElementById("sidebar-al_leader").textContent = feature.properties.al_leader || "Tidak Ada";
+                document.getElementById("sidebar-komoditi").textContent = feature.properties.komoditi || "Tidak Ada";
+                document.getElementById("sidebar-varietas").textContent = feature.properties.varietas || "Tidak Ada";
+                document.getElementById("sidebar-tanaman").textContent = feature.properties.tanaman || "Tidak Ada";
+                document.getElementById("sidebar-jumb_bibit").textContent = feature.properties.jumb_bibit || "Tidak Ada";
+
+                // Ambil container gambar
+                const imgContainer = document.getElementById("sidebar-images");
+                imgContainer.innerHTML = ''; // Clear gambar lama
+
+                // Ambil gambar berdasarkan nama & tanaman dari server
+                const nama = feature.properties.Nama || feature.properties.nama;
+                const tanaman = feature.properties.tanaman;
+
+                if (nama && tanaman) {
+                    fetch(`/admin/geodata/images-by-name-plant/${encodeURIComponent(nama)}/${encodeURIComponent(tanaman)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.images && data.images.length > 0) {
+                                data.images.forEach(img => {
+                                    const imgElem = document.createElement('img');
+                                    imgElem.src = `/storage/images/${img}`;
+                                    imgElem.className = 'img-thumbnail me-1';
+                                    imgElem.style.width = '80px';
+                                    imgContainer.appendChild(imgElem);
+                                });
+                            } else {
+                                imgContainer.textContent = 'Tidak ada gambar';
+                            }
+                        })
+                        .catch(() => {
+                            imgContainer.textContent = 'Gagal memuat gambar';
+                        });
+                } else {
+                    imgContainer.textContent = 'Tidak ada nama atau jenis tanaman';
+                }
+            });
+        }
+    }).addTo(maps);
+
+    // Zoom peta supaya mencakup semua feature
+    var bounds = geojsonLayer.getBounds();
+    if (bounds.isValid()) {
+        maps.fitBounds(bounds);
+    } else {
+        console.warn("GeoJSON tidak memiliki fitur dengan koordinat yang valid.");
+    }
+}
+
+// Load data GeoJSON dari backend dan render ke peta
+fetch('/admin/getgeojson?_t=' + new Date().getTime())
     .then(response => response.json())
     .then(data => {
         console.log("Data yang diambil:", data);
-        var geojsonLayer = L.geoJSON(data, {
-            style: function (feature) {
-    if (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon") {
-      return {
-        color: "#3388ff",
-        weight: 2,
-        fillOpacity: 0.4
-      };
-    }
-  },
-            pointToLayer: function (feature, latlng) {
-                var jenisTanaman = feature.properties.tanaman
-                    ? feature.properties.tanaman.trim().toLowerCase()
-                    : "default";
-            console.log(jenisTanaman);
-
-                // Tentukan URL gambar berdasarkan jenis tanaman
-                var iconUrl = "";
-                if (jenisTanaman === "tomat") {
-                    iconUrl = "../img/Tomato.png";  // Sesuaikan dengan lokasi gambar
-                } else if (jenisTanaman === "cabe") {
-                    iconUrl = "../img/cabe.png";
-                } else if (jenisTanaman === "ketimun") {
-                    iconUrl = "../img/timun.jpg";
-                } else if (jenisTanaman === "terong") {
-                    iconUrl = "../img/terong.jpg";
-                } else if (jenisTanaman === "buncis") {
-                    iconUrl = "../img/buncis.jpg";
-                } else if (jenisTanaman === "caisin") {
-                    iconUrl = "../img/caisin.jpg";
-                } else {
-                    iconUrl = "../img/logo.png"; // Gambar default jika tidak ditemukan
-                }
-
-                // Buat custom divIcon untuk menampilkan gambar di dalam marker
-                var customIcon = L.divIcon({
-                    className: "custom-marker",
-                    html: `<div class="marker-container" style="background-image: url('${iconUrl}');"></div>`,
-                    iconSize: [40, 40],
-                    iconAnchor: [20, 40],
-                    popupAnchor: [0, -40]
-                });
-
-                return L.marker(latlng, { icon: customIcon });
-            },
-            onEachFeature: function (feature, layer) {
-
-                 console.log("Tipe geometry:", feature.geometry.type);
-
-                layer.on('click', function () {
-                    // Tampilkan sidebar saat marker diklik
-                    document.getElementById("sidebar2").classList.add("active");
-
-                    // Isi data sidebar dari marker yang diklik
-                    document.getElementById("sidebar-nama").textContent = feature.properties.Nama || "Tidak Ada";
-                    document.getElementById("sidebar-no_hp").textContent = feature.properties.no_hp || "Tidak Ada";
-                    document.getElementById("sidebar-nama_kebun").textContent = feature.properties.lokasi|| "Tidak Ada";
-                    document.getElementById("sidebar-luas").textContent = feature.properties.luas || "Tidak Ada";
-                    document.getElementById("sidebar-elevasi").textContent = feature.properties.elevasi || "Tidak Ada";
-                    document.getElementById("sidebar-kelompok").textContent = feature.properties.kelompok || "Tidak Ada";
-                    document.getElementById("sidebar-leader").textContent = feature.properties.leader || "Tidak Ada";
-                    document.getElementById("sidebar-no_leader").textContent = feature.properties.no_leader || "Tidak Ada";
-                    document.getElementById("sidebar-al_leader").textContent = feature.properties.al_leader || "Tidak Ada";
-                    document.getElementById("sidebar-komoditi").textContent = feature.properties.komoditi || "Tidak Ada";
-                    document.getElementById("sidebar-varietas").textContent = feature.properties.varietas || "Tidak Ada";
-                    document.getElementById("sidebar-tanaman").textContent = feature.properties.tanaman || "Tidak Ada";
-                    document.getElementById("sidebar-jumb_bibit").textContent = feature.properties.jumb_bibit || "Tidak Ada";
-                    // Ambil gambar dari controller
-      const nama = feature.properties.Nama;
-const tanaman = feature.properties.tanaman;
-
-if (nama && tanaman) {
-    fetch(`/admin/geodata/images-by-name-plant/${encodeURIComponent(nama)}/${encodeURIComponent(tanaman)}`)
-        .then(response => response.json())
-        .then(data => {
-            const imgContainer = document.getElementById("sidebar-images");
-            imgContainer.innerHTML = '';
-
-            if (data.images && data.images.length > 0) {
-                data.images.forEach(img => {
-                    const imgElem = document.createElement('img');
-                    imgElem.src = `/storage/images/${img}`;
-                    imgElem.className = 'img-thumbnail me-1';
-                    imgElem.style.width = '80px';
-                    imgContainer.appendChild(imgElem);
-                });
-            } else {
-                imgContainer.textContent = 'Tidak ada gambar';
-            }
-        })
-        .catch(() => {
-            imgContainer.textContent = 'Gagal memuat gambar';
-        });
-} else {
-    imgContainer.textContent = 'Tidak ada nama atau jenis tanaman';
-}
-
-
-
-
-                });
-            }
-        }).addTo(maps);
-          // Sesuaikan tampilan peta agar mencakup semua data
-        var bounds = geojsonLayer.getBounds();
-        if (bounds.isValid()) {
-            maps.fitBounds(bounds);
-        } else {
-            console.warn("GeoJSON tidak memiliki fitur dengan koordinat yang valid.");
-        }
+        loadGeoJSON(data);
     })
     .catch(error => console.error('Error loading GeoJSON:', error));
 
@@ -301,6 +309,6 @@ imagesContainer.innerHTML = '';
   // Panggilan awal
   fetchWeather(3.64506,125.4326562);
 
-  
+
 
     </script>
