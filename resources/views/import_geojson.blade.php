@@ -17,7 +17,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <label for="nama">Nama</label>
+                            <label for="nama">Nama Pemilik</label>
                             <input type="text" class="form-control" id="nama" name="nama" required>
                         </div>
                     </div>
@@ -31,7 +31,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="lokasi">Lokasi</label>
+                                <label for="lokasi">Nama Kebun</label>
                                 <input type="text" class="form-control" id="lokasi" name="lokasi" required>
                             </div>
                         </div>
@@ -55,13 +55,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="no_hp">No HP</label>
+                                <label for="no_hp">Kontak Pemilik</label>
                                 <input type="text" class="form-control" id="no_hp" name="no_hp" >
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="kelompok">Kelompok</label>
+                                <label for="kelompok">Kelompok Tani</label>
                                 <input type="text" class="form-control" id="kelompok" name="kelompok" >
                             </div>
                         </div>
@@ -70,13 +70,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="leader">Leader</label>
+                                <label for="leader">Ketua Kelompok</label>
                                 <input type="text" class="form-control" id="leader" name="leader" >
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="no_leader">No Leader</label>
+                                <label for="no_leader">Kontak Ketua</label>
                                 <input type="text" class="form-control" id="no_leader" name="no_leader" >
                             </div>
                         </div>
@@ -85,7 +85,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="al_leader">Alamat Leader</label>
+                                <label for="al_leader">Alamat Ketua</label>
                                 <input type="text" class="form-control" id="al_leader" name="al_leader" >
                             </div>
                         </div>
@@ -100,13 +100,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="varietas">Varietas</label>
+                                <label for="varietas">Varietas Tanaman</label>
                                 <input type="text" class="form-control" id="varietas" name="varietas" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="jumb_bibit">Jumlah Bibit</label>
+                                <label for="jumb_bibit">Jumlah Tanaman</label>
                                 <input type="number" class="form-control" id="jumb_bibit" name="jumb_bibit" required>
                             </div>
                         </div>

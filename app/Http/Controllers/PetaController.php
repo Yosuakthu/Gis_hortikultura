@@ -29,7 +29,7 @@ class PetaController extends Controller
 
     public function showForm()
     {
-        return view('import_csv',['titel' => 'Import Data Zonah Nilai Tanah']);
+        return view('import_csv',['titel' => 'Import Data']);
     }
 
     //Star Note  https://docs.google.com/document/d/e/2PACX-1vTjuREUPY0Mf39ulOGH_Eh5DQMMm6xmsZXDC7vZ7vU1MnjaZ-y3vozqwanhRrBCzdb1SV-pyG1ttEyj/pub
@@ -63,7 +63,7 @@ class PetaController extends Controller
         ->make(true);
 }
 
-        return view('datacsv',['titel' => 'Data Zonah Nilai Tanah']);
+        return view('datacsv',['titel' => 'CRUD Data']);
     }
     // End Note
 
@@ -104,7 +104,7 @@ class PetaController extends Controller
             }
         }
 
-        return response()->json($geojsonArray); // ✅ Pindah ke sini
+        return response()->json($geojsonArray);
     }
 
 
@@ -128,7 +128,7 @@ try {
         'no_hp' => 'nullable|string',
         'kelompok' => 'nullable|string',
         'leader' => 'nullable|string',
-       'no_leader' => 'nullable|string',
+        'no_leader' => 'nullable|string',
         'al_leader' => 'nullable|string',
         'komoditi' => 'required|string',
         'varietas' => 'required|string',
@@ -138,11 +138,8 @@ try {
     dd($e->errors());
 }
 
-
-
-
         // Simpan file
-        $filePath = $request->file('geojson_file')->store('geojson_files','public');
+        $filePath = $request->file('geojson_file')->store('geojson', 'local');
 
 
 
@@ -227,7 +224,7 @@ public function getImagesByNameAndPlant($nama, $tanaman)
 
 
     if ($request->hasFile('geojson_file')) {
-    $path = $request->file('geojson_file')->store('geojson', 'public');
+    $path = $request->file('geojson_file')->store('geojson', 'local');
     $data->geojson_path = $path;
 
     Storage::put($path, file_get_contents($request->file('geojson_file')->getRealPath()));

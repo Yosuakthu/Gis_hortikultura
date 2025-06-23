@@ -3,26 +3,31 @@
     <div class="weather-info">
         <h3>Informasi Cuaca</h3>
         <ul>
-          {{-- <li><span><strong>Lokasi:</strong></span> <span id="location">Loading...</span></li> --}}
+          <li><span><strong>Lokasi:</strong></span> <span id="location">Loading...</span></li>
           <li><span><i class="fas fa-temperature-high"></i><strong> Suhu:</strong></span> <span id="temperature">Loading...</span></li>
           <li><span><i class="fas fa-tint"></i><strong> Kelembapan:</strong></span> <span id="humidity">Loading...</span></li>
           <li><span><i class="fas fa-wind"></i><strong> Angin:</strong></span> <span id="wind">Loading...</span></li>
           <li><span><i class="fas fa-cloud-sun"></i><strong> Deskripsi:</strong></span> <span id="description">Loading...</span></li>
         </ul>
 
-         <div class="legend mt-3">
-    <h4><i class="fas fa-palette"></i> Warna Tanaman</h4>
-    <ul style="list-style: none; padding-left: 0;">
-      <li><span class="legend-color" style="background-color: #ff0000;"></span> Cabe</li>
-    <li><span class="legend-color" style="background-color: #fa8072;"></span> Tomat</li>
-    <li><span class="legend-color" style="background-color: #02873c;"></span> Ketimun</li>
-    <li><span class="legend-color" style="background-color: #610378;"></span> Terong</li>
-    <li><span class="legend-color" style="background-color: #089f4a;"></span> Buncis</li>
-    <li><span class="legend-color" style="background-color: #1dfc7f;"></span> Caisin</li>
-    <li><span class="legend-color" style="background-color: #3388ff;"></span> Lainnya</li>
-    </ul>
-  </div>
-      </div>
+        <div class="legend mt-3">
+            <h4><i class="fas fa-palett"></i> Legenda</h4>
+            <ul style="list-style: none; padding-left: 0;">
+                <li><label><input type="checkbox" class="filter-checkbox" value="cabe" checked onchange="toggleLayer()" id="cabe">
+                <span class="legend-color" style="background-color: #ff0000;"></span> Cabe</label></li>
+                <li><label><input type="checkbox" class="filter-checkbox" value="tomat" checked onchange="toggleLayer()" id="tomat">
+                <span class="legend-color" style="background-color: #fa8072;"></span> Tomat</label></li>
+                <li><label><input type="checkbox" class="filter-checkbox" value="ketimun" checked onchange="toggleLayer()" id="ketimun">
+                <span class="legend-color" style="background-color: #02873c;"></span> Ketimun</label></li>
+                <li><label><input type="checkbox" class="filter-checkbox" value="terong" checked onchange="toggleLayer()" id="terong">
+                <span class="legend-color" style="background-color: #610378;"></span> Terong</label></li>
+                <li><label><input type="checkbox" class="filter-checkbox" value="buncis" checked onchange="toggleLayer()" id="buncis">
+                <span class="legend-color" style="background-color: #089f4a;"></span> Buncis</label></li>
+                <li><label><input type="checkbox" class="filter-checkbox" value="caisin" checked onchange="toggleLayer()" id="caisin">
+                <span class="legend-color" style="background-color: #1dfc7f;"></span> Caisin</label></li>
+            </ul>
+        </div>
+    </div>
 
      <div id="sidebar2" class="sidebar2 shadow">
   <button id="close">&times;</button>
@@ -31,10 +36,10 @@
     <h5><i class="fas fa-map-marker-alt me-2"></i> Detail Lokasi</h5>
 
     <dl class="row">
-      <dt class="col-sm-5">Nama:</dt>
+      <dt class="col-sm-5">Nama Pemilik:</dt>
       <dd class="col-sm-7" id="sidebar-nama"></dd>
 
-      <dt class="col-sm-5">No HP:</dt>
+      <dt class="col-sm-5">Kontak Pemilik:</dt>
       <dd class="col-sm-7" id="sidebar-no_hp"></dd>
 
       <dt class="col-sm-5">Nama Kebun:</dt>
@@ -52,7 +57,7 @@
       <dt class="col-sm-5">Ketua Kelompok:</dt>
       <dd class="col-sm-7" id="sidebar-leader"></dd>
 
-      <dt class="col-sm-5">No HP Ketua:</dt>
+      <dt class="col-sm-5">Kontak Ketua:</dt>
       <dd class="col-sm-7" id="sidebar-no_leader"></dd>
 
       <dt class="col-sm-5">Alamat Ketua:</dt>
@@ -64,10 +69,10 @@
       <dt class="col-sm-5">Varietas:</dt>
       <dd class="col-sm-7" id="sidebar-varietas"></dd>
 
-      <dt class="col-sm-5">Jenis Tanaman:</dt>
+      <dt class="col-sm-5">Tanaman:</dt>
       <dd class="col-sm-7" id="sidebar-tanaman"></dd>
 
-      <dt class="col-sm-5">Jumlah Bibit:</dt>
+      <dt class="col-sm-5">Jumlah Tanaman:</dt>
       <dd class="col-sm-7" id="sidebar-jumb_bibit"></dd>
 
      <dt class="col-sm-5">Gambar:</dt>
@@ -82,7 +87,6 @@
 
 
 </div>
-
 <script src="{{ asset('assets/leaflet/js/qgis2web_expressions.js')}}"></script>
 <script src="{{ asset('assets/leaflet/js/leaflet.rotatedMarker.js')}}"></script>
 <script src="{{ asset('assets/leaflet/js/leaflet.pattern.js')}}"></script>
@@ -120,6 +124,7 @@ subdomains:['mt0','mt1','mt2','mt3']
           layers :[googleHybrid]
         });
 
+
         var baseMaps = {
         "Peta Hybrid": googleHybrid,
         "Peta Streets": googleStreets,
@@ -132,6 +137,7 @@ subdomains:['mt0','mt1','mt2','mt3']
 
 
 let geojsonLayer;  // Variabel global untuk layer GeoJSON
+
 
 // Fungsi untuk load dan render GeoJSON ke peta
 function loadGeoJSON(data) {
@@ -173,39 +179,7 @@ function loadGeoJSON(data) {
         return {};
     },
         pointToLayer: function(feature, latlng) {
-            // Ambil jenis tanaman (lowercase dan trim)
-            var jenisTanaman = feature.properties.tanaman
-                ? feature.properties.tanaman.trim().toLowerCase()
-                : "default";
-
-            // Tentukan icon berdasarkan jenis tanaman
-            var iconUrl = "";
-            if (jenisTanaman === "tomat") {
-                iconUrl = "../img/Tomato.png";
-            } else if (jenisTanaman === "cabe") {
-                iconUrl = "../img/cabe.png";
-            } else if (jenisTanaman === "ketimun") {
-                iconUrl = "../img/timun.jpg";
-            } else if (jenisTanaman === "terong") {
-                iconUrl = "../img/terong.jpg";
-            } else if (jenisTanaman === "buncis") {
-                iconUrl = "../img/buncis.jpg";
-            } else if (jenisTanaman === "caisin") {
-                iconUrl = "../img/caisin.jpg";
-            } else {
-                iconUrl = "../img/logo.png";
-            }
-
-            // Custom icon dengan gambar
-            var customIcon = L.divIcon({
-                className: "custom-marker",
-                html: `<div class="marker-container" style="background-image: url('${iconUrl}'); width: 40px; height: 40px;"></div>`,
-                iconSize: [40, 40],
-                iconAnchor: [20, 40],
-                popupAnchor: [0, -40]
-            });
-
-            return L.marker(latlng, { icon: customIcon });
+            return L.marker(latlng);
         },
         onEachFeature: function(feature, layer) {
             // Event klik marker / polygon
@@ -269,12 +243,42 @@ function loadGeoJSON(data) {
     }
 }
 
+function toggleLayer() {
+    const jenisTerpilih = [];
+
+    // Ambil semua checkbox dan cek mana yang aktif
+    document.querySelectorAll('.filter-checkbox').forEach(cb => {
+        if (cb.checked) {
+            jenisTerpilih.push(cb.value.toLowerCase());
+        }
+    });
+
+    // Filter dataGeojson berdasarkan checkbox yang aktif
+    if (dataGeojson) {
+        const filtered = {
+            type: "FeatureCollection",
+            features: dataGeojson.features.filter(f => {
+                const jenis = f.properties.tanaman?.toLowerCase();
+                return jenisTerpilih.includes(jenis);
+            })
+        };
+
+        loadGeoJSON(filtered);
+    } else {
+        console.warn("GeoJSON belum dimuat.");
+    }
+}
+
+let dataGeojson;
+
 // Load data GeoJSON dari backend dan render ke peta
 fetch('/admin/getgeojson?_t=' + new Date().getTime())
     .then(response => response.json())
     .then(data => {
         console.log("Data yang diambil:", data);
         loadGeoJSON(data);
+        dataGeojson = data; 
+        toggleLayer();
     })
     .catch(error => console.error('Error loading GeoJSON:', error));
 
@@ -289,7 +293,6 @@ imagesContainer.innerHTML = '';
             document.getElementById("close").addEventListener("click", function () {
                 document.getElementById("sidebar2").classList.remove("active");
             });
-
      // Fungsi untuk mengambil data cuaca
      async function fetchWeather(lat, lon) {
     try {

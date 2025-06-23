@@ -13,21 +13,21 @@
             <table id="datacsv" class="display" style="width:100%">
                 <thead>
                     <tr>
-                        <th>Nama</th>
-                        <th>No HP</th>
+                        <th>Nama Pemilik</th>
+                        <th>Kontak Pemilik</th>
                         <th>Nama Kebun</th>
-                        <th>Luas</th>
+                        <th>Luas Lahan</th>
                         <th>Elevasi</th>
                         <th>Kelompok Tani</th>
                         <th>Ketua Kelompok</th>
                         <th>Alamat Ketua</th>
-                        <th>No HP Ketua</th>
+                        <th>Kontak Ketua</th>
                         <th>Komoditi</th>
-                        <th>Varietas</th>
+                        <th>Varietas Tanaman</th>
                         <th>Jenis Tanaman</th>
-                        <th>Jumlah Bibit</th>
-                        <th>GeoData</th>
+                        <th>Jumlah Tanaman</th>
                         <th>images</th>
+                        <th>GeoData</th>
                         <th width="200px">Action</th>
                     </tr>
                 </thead>
@@ -60,8 +60,8 @@
                           {data: 'varietas', name: 'varietas'},
                           {data: 'tanaman', name: 'tanaman'},
                           {data: 'jumb_bibit', name: 'jumb_bibit'},
-                          {data: 'geojson_path', name: 'geojson_path'},
                           {data: 'images', name: 'images'},
+                          {data: 'geojson_path', name: 'geojson_path'},
                           {data: 'action', name: 'action', orderable: false, searchable: false},
                       ]
                   });
@@ -101,7 +101,7 @@
 
       $('#datacsv').on('click', '.edit', function () {
     var id = $(this).data('id');
-    window.location.href = 'update-geo/' + id ; 
+    window.location.href = 'update-geo/' + id ;
 });
 
 

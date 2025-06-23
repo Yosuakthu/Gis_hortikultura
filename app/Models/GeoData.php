@@ -23,8 +23,8 @@ class GeoData extends Model
         'komoditi',
         'varietas',
         'jumb_bibit',
-        'geojson_path',
-        'images'
+        'images',
+        'geojson_path'
 
     ];
 

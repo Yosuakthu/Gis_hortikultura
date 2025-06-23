@@ -16,7 +16,7 @@
 
                         @if (!empty($data->geojson_path))
         <small class="form-text text-muted mt-2">
-            File saat ini: 
+            File saat ini:
             <a href="{{ asset('storage/' . $data->geojson_path) }}" target="_blank" download>
                 {{ basename($data->geojson_path) }}
             </a>
