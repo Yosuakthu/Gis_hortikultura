@@ -1,5 +1,9 @@
 
 <div id="map">
+    <div id="search-container">
+  <input type="text" id="search-input" placeholder="Cari nama..." />
+  <i class="fas fa-search" id="search-icon"></i>
+</div>
     <div class="weather-info">
         <h3>Informasi Cuaca</h3>
         <ul>
@@ -277,7 +281,7 @@ fetch('/admin/getgeojson?_t=' + new Date().getTime())
     .then(data => {
         console.log("Data yang diambil:", data);
         loadGeoJSON(data);
-        dataGeojson = data; 
+        dataGeojson = data;
         toggleLayer();
     })
     .catch(error => console.error('Error loading GeoJSON:', error));
@@ -285,6 +289,86 @@ fetch('/admin/getgeojson?_t=' + new Date().getTime())
 
         let imagesContainer = document.getElementById('sidebar-images');
 imagesContainer.innerHTML = '';
+
+let searchResults = [];
+let currentSearchIndex = 0;
+let highlightedLayer = null; // untuk menyimpan highlight aktif sebelumnya
+
+document.getElementById('search-input').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+        const keyword = this.value.trim().toLowerCase();
+
+        if (!dataGeojson || !dataGeojson.features || dataGeojson.features.length === 0) {
+            alert("Data GeoJSON belum tersedia.");
+            return;
+        }
+
+        // Cari ulang hanya jika keyword berubah
+        if (this.dataset.lastSearch !== keyword) {
+            searchResults = dataGeojson.features.filter(f => {
+                return [f.properties.Nama, f.properties.lokasi, f.properties.tanaman]
+                    .some(val => (val || "").toLowerCase().includes(keyword));
+            });
+            currentSearchIndex = 0;
+            this.dataset.lastSearch = keyword;
+        }
+
+        if (searchResults.length > 0) {
+            const feature = searchResults[currentSearchIndex];
+
+            let found = false;
+
+            geojsonLayer.eachLayer(function (layer) {
+                if (
+                    layer.feature &&
+                    layer.feature.properties.Nama === feature.properties.Nama &&
+                    layer.feature.properties.lokasi === feature.properties.lokasi &&
+                    layer.feature.properties.tanaman === feature.properties.tanaman
+                ) {
+                    // Zoom dan buka sidebar
+                    maps.fitBounds(layer.getBounds(), { maxZoom: 18 });
+                    layer.fire('click');
+
+                    // Hapus highlight sebelumnya jika ada
+                    if (highlightedLayer) {
+                        geojsonLayer.resetStyle(highlightedLayer);
+                        highlightedLayer = null;
+                    }
+
+                    // Tambahkan highlight baru
+                    if (layer.setStyle) {
+                        layer.setStyle({
+                            color: '#ffcc00',
+                            weight: 4,
+                            fillOpacity: 0.6
+                        });
+
+                        highlightedLayer = layer;
+
+                        // Hapus highlight setelah 3 detik
+                        setTimeout(() => {
+                            if (highlightedLayer) {
+                                geojsonLayer.resetStyle(highlightedLayer);
+                                highlightedLayer = null;
+                            }
+                        }, 5000);
+                    }
+
+                    found = true;
+                }
+            });
+
+            if (!found) {
+                alert("Data ditemukan, tetapi layer tidak bisa difokuskan.");
+            }
+
+            currentSearchIndex = (currentSearchIndex + 1) % searchResults.length;
+        } else {
+            alert("Data tidak ditemukan.");
+        }
+    }
+});
+
 
 
 
@@ -344,7 +428,6 @@ imagesContainer.innerHTML = '';
 
   // Panggilan awal
   fetchWeather(3.64506,125.4326562);
-
 
 
     </script>

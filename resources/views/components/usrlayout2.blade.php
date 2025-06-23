@@ -194,6 +194,49 @@
   border: 1px solid #ccc;
 }
 
+#search-container {
+  position: absolute;
+  top: 143px;
+  left: 13px;
+  z-index: 1000;
+  transition: width 0.3s ease;
+  overflow: hidden;
+  width: 40px;
+  height: 40px;
+  background: white;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+
+#search-container:hover {
+  width: 200px;
+  border-radius: 8px;
+  padding: 5px 10px;
+  justify-content: start;
+}
+
+#search-container input {
+  width: 100%;
+  border: none;
+  outline: none;
+  display: none;
+}
+
+#search-container:hover input {
+  display: block;
+  margin-left: 8px;
+}
+
+#search-icon {
+  font-size: 18px;
+  color: #555;
+  cursor: pointer;
+}
+
+
    </style>
 </head>
 <body class="index-page">
